@@ -15,7 +15,7 @@ pipeline {
         
         
           stage('Push Docker image') {
-        steps {
+            steps {
             echo 'Pushing Docker image'
             withCredentials([usernamePassword(credentialsId: 'docker_hub_login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                 
@@ -28,9 +28,7 @@ pipeline {
         }
           }
 
-            
-           stages {
-
+          
             stage ('Copy') {
             steps{
             sshagent(credentials : ['swarm-staging']) {
@@ -39,7 +37,7 @@ pipeline {
             sh 'scp docker-compose.yml root@$prod_ip:/home/user/workspace/New-Project_master'
         }
     }
-}
+
 
             stage('DeployToProduction') {
                 when {
