@@ -33,7 +33,7 @@ pipeline {
             sshagent(credentials : ['swarm-staging']) {
             sh 'ssh -o StrictHostKeyChecking=no root@$prod_ip uptime'
             sh 'ssh -v root@$prod_ip'
-            sh 'scp docker-compose.yml root@$prod_ip:/home/user/workspace/New-Project_khaled/docker-compose.yml'
+            sh 'scp -r docker-compose.yml root@$prod_ip:/home/user/workspace/New-Project_khaled/docker-compose.yml'
         }
     }
 }           
