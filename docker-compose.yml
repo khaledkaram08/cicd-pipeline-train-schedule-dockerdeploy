@@ -2,7 +2,7 @@ version: "3"
 services:
 
   guru-srv:
-    image: cloudtesttt/docker-image-guru:jenkins-New-Project-master-47
+    image: cloudtesttt/docker-image-guru:jenkins-New-Project-master-49
     ports:
       - "8080:8080"
     networks:
