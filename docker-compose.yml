@@ -2,7 +2,7 @@ version: "3"
 services:
 
   guru-srv:
-    image: cloudtesttt/docker-image-guru:2
+    image: cloudtesttt/docker-image-guru:4
     ports:
       - "8080:8080"
     networks:
