@@ -12,10 +12,8 @@ pipeline {
 
         }
     }
-        
-        
           stage('Push Docker image') {
-            steps {
+        steps {
             echo 'Pushing Docker image'
             withCredentials([usernamePassword(credentialsId: 'docker_hub_login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                 
@@ -28,16 +26,15 @@ pipeline {
         }
           }
 
-          
-            stage ('Copy') {
+
+        stage ('Copy') {
             steps{
             sshagent(credentials : ['swarm-staging']) {
             sh 'ssh -o StrictHostKeyChecking=no root@$prod_ip uptime'
             sh 'ssh -v root@$prod_ip'
             sh 'scp docker-compose.yml root@$prod_ip:/home/user/workspace/New-Project_master'
         }
-    }
-
+    }     
 
             stage('DeployToProduction') {
                 when {
@@ -49,15 +46,12 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'webserver_login', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
                         script {
                             sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker pull cloudtesttt/docker-image-guru:$BUILD_NUMBER\""
-                                               
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker stack deploy -c docker-compose.yml new-deploy\""
+                            
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker stack deploy -c /home/user/workspace/New-Project_master/docker-compose.yml new-deploy\""
                         }
                     }
                 }
-
-                
             }
 
-         }
-       }
     }
+}
