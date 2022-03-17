@@ -1,12 +1,16 @@
 pipeline {
-    agent any
+    agent { label 'test' }
     stages {
-        stage('Build') {
-            steps {
-                echo 'Running build automation'
-                sh './gradlew build --no-daemon'
-                archiveArtifacts artifacts: 'dist/trainSchedule.zip'
-            }
+
+        stage ('Copy') {
+            steps{
+            sshagent(credentials : ['swarm-staging']) {
+            sh 'ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip uptime'
+            sh 'ssh -v $USERNAME@$prod_ip'
+            sh 'scp docker-compose.yml $USERNAME@$prod_ip:/home/user/workspace/train-schedule_ayman'
         }
+    }
+}
+
     }
 }
