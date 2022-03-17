@@ -34,7 +34,7 @@ pipeline {
             sh 'ssh -v root@$prod_ip'
             sh 'scp docker-compose.yml root@$prod_ip:/home/user/workspace/New-Project_master'
         }
-    }     
+            }     }
 
             stage('DeployToProduction') {
                 when {
