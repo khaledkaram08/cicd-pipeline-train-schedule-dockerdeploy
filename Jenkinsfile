@@ -27,14 +27,6 @@ pipeline {
           }
 
 
-        stage ('Copy') {
-            steps{
-            sshagent(credentials : ['swarm-staging']) {
-            sh 'ssh -o StrictHostKeyChecking=no root@$prod_ip uptime'
-            sh 'ssh -v root@$prod_ip'
-            sh 'scp docker-compose.yml root@$prod_ip:/home/user/workspace/New-Project_master'
-        }
-            }     }
 
             stage('DeployToProduction') {
                 when {
@@ -47,11 +39,18 @@ pipeline {
                         script {
                             sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker pull cloudtesttt/docker-image-guru:$BUILD_NUMBER\""
                             
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker stack deploy -c /home/user/workspace/New-Project_master/docker-compose.yml new-deploy\""
+                            try {
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker stop train-schedule\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker rm train-schedule\""
+                        } catch (err) {
+                            echo: 'caught error: $err'
+                        }
+                            
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker run --restart always --name train-schedule -p 8080:8080 -d cloudtesttt/docker-image-guru:$BUILD_NUMBER\""
                         }
                     }
                 }
             }
 
     }
-    } }
+}
