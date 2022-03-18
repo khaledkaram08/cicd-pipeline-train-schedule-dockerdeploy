@@ -7,7 +7,7 @@ pipeline {
             // tag DockerHubAccountName/RepoName:tag(semver)
             sh 'pwd'
             sh 'whoami'
-            sh 'docker build -t cloudtesttt/docker-image-guru:$BUILD_NUMBER .'
+            sh 'docker build -t cloudtesttt/docker-image-guru:$BUILD_TAG .'
             
 
         }
@@ -19,7 +19,7 @@ pipeline {
                 
             sh '''
             docker login --username=$USERNAME --password=$PASSWORD
-            docker push cloudtesttt/docker-image-guru:$BUILD_NUMBER
+            docker push cloudtesttt/docker-image-guru:$BUILD_TAG
             '''
             }
 
@@ -27,6 +27,16 @@ pipeline {
           }
 
 
+
+        stage ('Deploy') {
+            steps{
+            sshagent(credentials : ['swarm-staging']) {
+            sh 'ssh -o StrictHostKeyChecking=no root@$prod_ip uptime'
+            sh 'ssh -v root@$prod_ip'
+            sh 'scp -r docker-compose.yml root@$prod_ip:/home/user/workspace/New-Project_master/docker-compose.yml'
+        }
+    }
+}           
 
             stage('DeployToProduction') {
                 when {
@@ -37,7 +47,7 @@ pipeline {
                     milestone(1)
                     withCredentials([usernamePassword(credentialsId: 'webserver_login', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
                         script {
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker pull cloudtesttt/docker-image-guru:$BUILD_NUMBER\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker pull cloudtesttt/docker-image-guru:$BUILD_TAG\""
                             
                             try {
                             sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker stop train-schedule\""
@@ -45,11 +55,13 @@ pipeline {
                         } catch (err) {
                             echo: 'caught error: $err'
                         }
-                            
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker run --restart always --name train-schedule -p 8080:8080 -d cloudtesttt/docker-image-guru:$BUILD_NUMBER\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"cd /home/user/workspace/New-Project_master\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker stack deploy -c /home/user/workspace/New-Project_master/docker-compose.yml new-deploy\""
                         }
                     }
                 }
+
+                
             }
 
     }
