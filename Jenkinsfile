@@ -28,11 +28,12 @@ pipeline {
 
 
 
-        stage ('Deploy') {
+        stage ('Copying YML File') {
             steps{
             sshagent(credentials : ['swarm-staging']) {
             sh 'ssh -o StrictHostKeyChecking=no root@$prod_ip uptime'
             sh 'ssh -v root@$prod_ip'
+            sh 'rm -f /home/user/workspace/New-Project_khaled/docker-compose.yml'
             sh 'scp -r docker-compose.yml root@$prod_ip:/home/user/workspace/New-Project_khaled/docker-compose.yml'
         }
     }
@@ -42,7 +43,7 @@ pipeline {
 
             stage('DeployToProduction') {
                 when {
-                    branch 'khaled'
+                    branch 'master'
                 }
                 steps {
                     input 'Deploy to Production?'
@@ -58,7 +59,7 @@ pipeline {
                             echo: 'caught error: $err'
                         }
                             sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"cd /home/user/workspace/New-Project_master\""
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker stack deploy -c /home/user/workspace/New-Project_khaled/docker-compose.yml new-deploy\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker stack deploy -c /home/user/workspace/New-Project_master/docker-compose.yml new-deploy\""
                         }
                     }
                 }
