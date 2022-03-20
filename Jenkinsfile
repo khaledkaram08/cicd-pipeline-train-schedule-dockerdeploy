@@ -7,7 +7,7 @@ pipeline {
             // tag DockerHubAccountName/RepoName:tag(semver)
             sh 'pwd'
             sh 'whoami'
-            sh 'docker build -t cloudtesttt/docker-image-guru:$BUILD_TAG .'
+            sh 'docker build -t cloudtesttt/docker-image-guru:$BUILD_NUMBER .'
             
 
         }
@@ -19,7 +19,7 @@ pipeline {
                 
             sh '''
             docker login --username=$USERNAME --password=$PASSWORD
-            docker push cloudtesttt/docker-image-guru:$BUILD_TAG
+            docker push cloudtesttt/docker-image-guru:$BUILD_NUMBER
             '''
             }
 
@@ -47,7 +47,7 @@ pipeline {
                     milestone(1)
                     withCredentials([usernamePassword(credentialsId: 'webserver_login', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
                         script {
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker pull cloudtesttt/docker-image-guru:$BUILD_TAG\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker pull cloudtesttt/docker-image-guru:$BUILD_NUMBER\""
                             
                             try {
                             sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker stack rm new-deploy\""
