@@ -33,7 +33,6 @@ pipeline {
             sshagent(credentials : ['swarm-staging']) {
             sh 'ssh -o StrictHostKeyChecking=no root@$prod_ip uptime'
             sh 'ssh -v root@$prod_ip'
-            sh 'rm -f /home/user/workspace/New-Project_khaled/docker-compose.yml'
             sh 'scp -r docker-compose.yml root@$prod_ip:/home/user/workspace/New-Project_khaled/docker-compose.yml'
         }
     }
@@ -52,8 +51,8 @@ pipeline {
                             sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker pull cloudtesttt/docker-image-guru:$BUILD_TAG\""
                             
                             try {
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker stop train-schedule\""
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker rm train-schedule\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker stack rm new-deploy\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker rm -f train-schedule\""
                         } catch (err) {
                             echo: 'caught error: $err'
                         }
