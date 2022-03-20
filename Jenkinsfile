@@ -38,7 +38,6 @@ pipeline {
     }
 }           
 
-
             stage('DeployToProduction') {
                 when {
                     branch 'khaled'
