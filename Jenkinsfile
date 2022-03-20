@@ -56,6 +56,7 @@ pipeline {
                             echo: 'caught error: $err'
                         }
                             sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"cd /home/user/workspace/New-Project_khaled\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"sed -i 's/cloudtesttt/docker-image-guru*/cloudtesttt/docker-image-guru:$build_tag/' docker-compose.yml""
                             sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker stack deploy -c /home/user/workspace/New-Project_khaled/docker-compose.yml new-deploy\""
                         }
                     }
