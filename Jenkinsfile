@@ -33,7 +33,7 @@ pipeline {
             sshagent(credentials : ['swarm-staging']) {
             sh 'ssh -o StrictHostKeyChecking=no root@$prod_ip uptime'
             sh 'ssh -v root@$prod_ip'
-            sh 'scp -r docker-compose.yml root@$prod_ip:/home/user/workspace/New-Project_khaled/docker-compose.yml'
+            sh 'scp -r docker-compose.yml root@$prod_ip:/home/user/workspace/Multi-Tasks_khaled/docker-compose.yml'
         }
     }
 }           
@@ -48,17 +48,16 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'webserver_login', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
                         script {
                             sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker pull cloudtesttt/docker-image-guru:$BUILD_NUMBER\""
-                            
-                            try {
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker stack rm new-deploy\""
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker rm -f train-schedule\""
-                        } catch (err) {
-                            echo: 'caught error: $err'
+                    
                         }
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"cd /home/user/workspace/New-Project_khaled\""
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"sed -i 's/cloudtesttt/docker-image-guru*/cloudtesttt/docker-image-guru:$build_tag/' docker-compose.yml\""
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker stack deploy -c /home/user/workspace/New-Project_khaled/docker-compose.yml new-deploy\""
-                        }
+                    sh 'cd /home/user/workspace/Multi-Tasks_khaled'
+                    sh 'pwd'
+                    sh 'echo $BUILD_NUMBER'
+                    sh "sed -i 's!:$BUILD_NUMBER!:$BUILD_NUMBER!g' /home/user/workspace/Multi-Tasks_khaled/docker-compose.yml"
+                    sh 'cat /home/user/workspace/Multi-Tasks_khaled/docker-compose.yml'
+                    sh 'docker stack rm new-deploy'
+                    sh 'docker stack deploy -c /home/user/workspace/Multi-Tasks_khaled/docker-compose.yml new-deploy'
+                        
                     }
                 }
 
