@@ -7,62 +7,13 @@ pipeline {
             // tag DockerHubAccountName/RepoName:tag(semver)
             sh 'pwd'
             sh 'whoami'
-            sh 'docker build -t cloudtesttt/docker-image-guru:$BUILD_NUMBER .'
-            
+            sh 'docker build -t cloudtesttt/docker-image-guru:$BRANCH_NAME-$BUILD_TAG .'
+            sh 'docker build -t cloudtesttt/docker-image-guru:$BRANCH_NAME-$BUILD_TAG .'
+            sh 'docker build -t cloudtesttt/docker-image-guru:$BRANCH_NAME-$BUILD_TAG .'
 
         }
     }
-          stage('Push Docker image') {
-        steps {
-            echo 'Pushing Docker image'
-            withCredentials([usernamePassword(credentialsId: 'docker_hub_login', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                
-            sh '''
-            docker login --username=$USERNAME --password=$PASSWORD
-            docker push cloudtesttt/docker-image-guru:$BUILD_NUMBER
-            '''
-            }
-
-        }
-          }
-
-
-
-        stage ('Copying YML File') {
-            steps{
-            sshagent(credentials : ['swarm-staging']) {
-            sh 'ssh -o StrictHostKeyChecking=no root@$prod_ip uptime'
-            sh 'ssh -v root@$prod_ip'
-            sh 'scp -r docker-compose.yml root@$prod_ip:/home/user/workspace/Multi-Tasks_khaled/docker-compose.yml'
-        }
-    }
-}           
-
-            stage('DeployToProduction') {
-                when {
-                    branch 'khaled'
-                }
-                steps {
-                    input 'Deploy to Production?'
-                    milestone(1)
-                    withCredentials([usernamePassword(credentialsId: 'webserver_login', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
-                        script {
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker pull cloudtesttt/docker-image-guru:$BUILD_NUMBER\""
-                    
-                        }
-                    sh 'cd /home/user/workspace/Multi-Tasks_khaled'
-                    sh 'pwd'
-                    sh 'echo $BUILD_NUMBER'
-                    sh "sed -i 's!:$BUILD_NUMBER!:$BUILD_NUMBER!g' /home/user/workspace/Multi-Tasks_khaled/docker-compose.yml"
-                    sh 'cat /home/user/workspace/Multi-Tasks_khaled/docker-compose.yml'
-                    sh 'docker stack rm new-deploy'
-                    sh 'docker stack deploy -c /home/user/workspace/Multi-Tasks_khaled/docker-compose.yml new-deploy'
-                        
-                    }
-                }
-
-                
-            }
+       
 
     }
 }
