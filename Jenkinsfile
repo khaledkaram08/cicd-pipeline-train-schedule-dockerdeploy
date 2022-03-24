@@ -22,7 +22,7 @@ pipeline {
             sh 'docker build -t cloudtesttt/docker-image-guru:$BRANCH_NAME-$BUILD_TAG .'
 
         }
-    }
+    
 
             when {branch 'master' }
                 steps {
@@ -34,8 +34,4 @@ pipeline {
 
         }
     }
-
-
-
     }
-}
