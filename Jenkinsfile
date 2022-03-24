@@ -13,7 +13,7 @@ pipeline {
         }
     }
 
-          stage('Build Docker image') {
+          stage('Build Docker image2') {
               when {branch 'master' }
                 steps {
             echo 'Running build Docker image'
