@@ -16,7 +16,7 @@ services:
         condition: on-failure
 
 guru-2:
-    image: cloudtesttt/docker-image-guru:master-jenkins-Multi-Tasks-master-$BUILD_TAG
+    image: cloudtesttt/docker-image-guru:master-$BUILD_TAG
     ports:
       - "8070:8080"
     networks:
@@ -30,7 +30,7 @@ guru-2:
         condition: on-failure
 
 guru-3:
-    image: cloudtesttt/docker-image-guru:example-solution-jenkins-Multi-Tasks-example-solution-$BUILD_TAG
+    image: cloudtesttt/docker-image-guru:example-solution-$BUILD_TAG
     ports:
       - "8060:8080"
     networks:
