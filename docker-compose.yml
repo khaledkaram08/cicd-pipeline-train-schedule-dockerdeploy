@@ -16,7 +16,7 @@ services:
         condition: on-failure
 
 guru-2:
-    image: cloudtesttt/docker-image-guru:master-$BUILD_TAG
+    image: "cloudtesttt/docker-image-guru:master-$BUILD_TAG"
     ports:
       - "8070:8080"
     networks:
