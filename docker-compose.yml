@@ -30,7 +30,7 @@ guru-2:
         condition: on-failure
 
 guru-3:
-    image: cloudtesttt/docker-image-guru:example-solution-$BUILD_TAG
+    image: "cloudtesttt/docker-image-guru:example-solution-$BUILD_TAG"
     ports:
       - "8060:8080"
     networks:
