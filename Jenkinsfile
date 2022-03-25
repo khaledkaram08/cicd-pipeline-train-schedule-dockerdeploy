@@ -24,19 +24,7 @@ pipeline {
             }
 
         }
-          }
-
-
-
-        stage ('Copying YML File') {
-            steps{
-            sshagent(credentials : ['swarm-staging']) {
-            sh 'ssh -o StrictHostKeyChecking=no root@$prod_ip uptime'
-            sh 'ssh -v root@$prod_ip'
-            sh 'scp -r docker-compose.yml root@$prod_ip:/home/user/workspace/Multi-Tasks_example-solution/docker-compose.yml'
-        }
-    }
-}           
+          }       
 
             stage('DeployToProduction') {
                 when {
