@@ -38,13 +38,6 @@ pipeline {
                             sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker pull cloudtesttt/docker-image-guru:$BRANCH_NAME-$BUILD_TAG\""
                     
                         }
-                    sh 'cd /home/user/workspace/Multi-Tasks_example-solution'
-                    sh 'pwd'
-                    sh 'echo $BRANCH_NAME-$BUILD_TAG'
-                    sh "sed -i 's!:$BRANCH_NAME-$BUILD_TAG!:$BRANCH_NAME-$BUILD_TAG!g' /home/user/workspace/Multi-Tasks_example-solution/docker-compose.yml"
-                    sh 'cat /home/user/workspace/Multi-Tasks_example-solution/docker-compose.yml'
-                    sh 'docker stack rm new-deploy'
-                    sh 'docker stack deploy -c /home/user/workspace/Multi-Tasks_example-solution/docker-compose.yml new-deploy'
                         
                     }
                 }
