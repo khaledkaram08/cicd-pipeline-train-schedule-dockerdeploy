@@ -1,8 +1,8 @@
 version: "3"
 services:
 
-  guru-1:
-    image: cloudtesttt/docker-image-guru:$BRANCH_NAME-$BUILD_TAG
+  guru-srv:
+    image: cloudtesttt/docker-image-guru:$BUILD_NUMBER
     ports:
       - "8080:8080"
     networks:
@@ -14,34 +14,6 @@ services:
         delay: 10s
       restart_policy:
         condition: on-failure
-
-guru-2:
-    image: "cloudtesttt/docker-image-guru:master-$BUILD_TAG"
-    ports:
-      - "8070:8080"
-    networks:
-      - frontend
-    deploy:
-      replicas: 3
-      update_config:
-        parallelism: 2
-        delay: 10s
-      restart_policy:
-        condition: on-failure
-
-guru-3:
-    image: "cloudtesttt/docker-image-guru:example-solution-$BUILD_TAG"
-    ports:
-      - "8060:8080"
-    networks:
-      - frontend
-    deploy:
-      replicas: 3
-      update_config:
-        parallelism: 2
-        delay: 10s
-      restart_policy:
-        condition: on-failure                
 
 
 networks:
