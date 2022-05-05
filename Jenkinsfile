@@ -32,7 +32,7 @@ pipeline {
             sshagent(credentials : ['swarm-staging']) {
             sh 'ssh -o StrictHostKeyChecking=no root@$prod_ip uptime'
             sh 'ssh -v root@$prod_ip'
-            sh 'scp -r docker-compose.yml root@$prod_ip:/home/user/workspace/Multi-Tasks_khaled/docker-compose.yml'
+            sh 'scp -r docker-compose.yml root@$prod_ip:/var/lib/jenkins/workspace/New-Test_khaled/docker-compose.yml'
         }
     }
 }           
@@ -49,13 +49,13 @@ pipeline {
                             sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker pull cloudtesttt/docker-image-guru:$BRANCH_NAME-$BUILD_TAG\""
                     
                         }
-                    sh 'cd /home/user/workspace/Multi-Tasks_khaled'
+                    sh 'cd /var/lib/jenkins/workspace/New-Test_khaled'
                     sh 'pwd'
                     sh 'echo $BRANCH_NAME-$BUILD_TAG'
-                    sh "sed -i 's!:$BRANCH_NAME-$BUILD_TAG!:$BRANCH_NAME-$BUILD_TAG!g' /home/user/workspace/Multi-Tasks_khaled/docker-compose.yml"
-                    sh 'cat /home/user/workspace/Multi-Tasks_khaled/docker-compose.yml'
+                    sh "sed -i 's!:$BRANCH_NAME-$BUILD_TAG!:$BRANCH_NAME-$BUILD_TAG!g' /var/lib/jenkins/workspace/New-Test_khaled/docker-compose.yml"
+                    sh 'cat /var/lib/jenkins/workspace/New-Test_khaled/docker-compose.yml'
                     sh 'docker stack rm new-deploy'
-                    sh 'docker stack deploy -c /home/user/workspace/Multi-Tasks_khaled/docker-compose.yml new-deploy'
+                    sh 'docker stack deploy -c /var/lib/jenkins/workspace/New-Test_khaled/docker-compose.yml new-deploy'
                         
                     }
                 }
