@@ -2,7 +2,7 @@ version: "3"
 services:
 
   guru-srv:
-    image: cloudtesttt/docker-image-guru:$BUILD_NUMBER
+    image: cloudtesttt/docker-image-guru:$BRANCH_NAME-$BUILD_NUMBER
     ports:
       - "8080:8080"
     networks:
